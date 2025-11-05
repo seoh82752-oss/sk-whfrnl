@@ -6,4 +6,4 @@ if st.button('인사말 생성'):
   st.info(a+'쁑')
   st.warning(b+'콬ㅎㅋㅎㅋㅎㅋㅋㅋㅋ')
   st.error('뿡ㅋㅋㅋㅋㅋㅋㅋ')
-  st.fish()
+  st.balloons9)
