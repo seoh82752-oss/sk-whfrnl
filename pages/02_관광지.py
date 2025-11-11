@@ -5,10 +5,7 @@ import folium
 
 st.set_page_config(page_title="오기구인의 서울 TOP10", layout="wide")
 
-st.title("오기구인이 좋아하는 서울 주요 관광지 — TOP 10 🧭")
-st.write("Folium 지도로 서울의 주요 관광지 10곳을 표시합니다. (즐겨찾기: 오기구인)")
-
-# 장소 데이터: 이름, 위도, 경도, 간단 설명
+# --- 지도 데이터 설정 ---
 PLACES = [
     {"name": "경복궁 (Gyeongbokgung Palace)", "lat": 37.579884, "lon": 126.9768,
      "desc": "조선의 대표 궁궐. 광화문과 함께 서울의 상징."},
@@ -32,10 +29,11 @@ PLACES = [
      "desc": "전통 재래시장 — 길거리 음식과 저렴한 쇼핑."}
 ]
 
-# 지도 중심: 서울 시청(대략) 또는 PLACES 평균으로 계산
+# 지도 중심 설정 (평균 좌표)
 avg_lat = sum(p["lat"] for p in PLACES) / len(PLACES)
 avg_lon = sum(p["lon"] for p in PLACES) / len(PLACES)
 
+# Folium 지도 생성
 m = folium.Map(location=[avg_lat, avg_lon], zoom_start=12)
 
 # 마커 추가
@@ -47,11 +45,31 @@ for i, place in enumerate(PLACES, start=1):
         tooltip=f"{i}. {place['name']}"
     ).add_to(m)
 
-# 클러스터 필요 시 주석 해제하고 import MarkerCluster 사용 가능
-# from folium.plugins import MarkerCluster
-# cluster = MarkerCluster().add_to(m)
-# for place in PLACES:
-#     folium.Marker(...).add_to(cluster)
+# --- Streamlit 출력 (시작하자마자 지도 표시) ---
+st.title("🗺️ 오기구인이 좋아하는 서울 관광지 TOP10")
 
-st.subheader("지도 미리보기")
-st.write("마커를 클릭하면 상세 정보를 볼 수 있어요.")
+# 바로 지도 출력
+st_folium(m, width=1200, height=700)
+
+# --- 사이드바 ---
+st.sidebar.title("목록 & 코드 다운로드")
+st.sidebar.write("오기구인의 TOP10 장소:")
+for i, p in enumerate(PLACES, start=1):
+    st.sidebar.markdown(f"**{i}. {p['name']}**  \n{p['desc']}")
+
+# 코드 보기 / 다운로드 버튼
+st.sidebar.markdown("---")
+st.sidebar.subheader("코드 & requirements.txt")
+
+# main.py 코드 표시 및 다운로드
+with open(__file__, "r", encoding="utf-8") as f:
+    app_code = f.read()
+st.sidebar.download_button("📄 main.py 다운로드", data=app_code, file_name="main.py")
+
+# requirements.txt 표시 및 다운로드
+requirements_txt = """streamlit
+folium
+streamlit-folium
+"""
+st.sidebar.download_button("🧾 requirements.txt 다운로드", data=requirements_txt, file_name="requirements.txt")
+
